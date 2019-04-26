@@ -1,4 +1,7 @@
 # shopreceipt
+You can download the executable jar **![HERE](https://github.com/fd8783/shopreceipt/blob/master/out/artifacts/shopreceipt_jar/shopreceipt.jar?raw=true)**
+
+
 Available Location: CA, NY      
 
 How to use:      
