@@ -11,5 +11,6 @@ Enter Items into items Field in following format:
 Separate Item with ","      
 ![User Guide](userGuide.PNG)
 
-Here is the database structure 
+       
+**Here is the database structure**       
 ![DBStructure](https://github.com/fd8783/shopreceipt/blob/master/dbStructure.PNG)
