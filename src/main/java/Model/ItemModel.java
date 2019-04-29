@@ -29,6 +29,10 @@ public class ItemModel {
         this.quantity = quantity;
     }
 
+    public void addQuantity(int quantity){
+        this.setQuantity(getQuantity() + quantity);
+    }
+
     public BigDecimal getPrice() {
         return price;
     }

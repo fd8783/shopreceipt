@@ -56,7 +56,7 @@ public class ShoppingCartController {
 
             int errorCheck = tax.compareTo(new BigDecimal(-1));
             if (errorCheck <= 0){
-                //alculateTax return -1 if location not exist, -2 if  GenericJDBCException occur
+                //calculateTax return -1 if location not exist, -2 if  GenericJDBCException occur
                 receiptContent = errorCheck == -2 ? "GenericJDBCException catched" : StringHelper.getString("locationNotExist");
             }
             else {

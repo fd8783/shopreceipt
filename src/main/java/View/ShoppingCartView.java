@@ -2,11 +2,14 @@ package View;
 
 import Helper.StringHelper;
 import Model.ItemModel;
+import sun.plugin.javascript.navig.Array;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ShoppingCartView extends JFrame {
 
@@ -57,18 +60,28 @@ public class ShoppingCartView extends JFrame {
 
     public ItemModel[] getTfItems() {
         String[] itemListStr = tfItems.getText().replaceAll("( at )", " ").split(",");
-        ItemModel[] itemModels = new ItemModel[itemListStr.length];
+        List<ItemModel> itemModels = new ArrayList<>(itemListStr.length);
 
         //transform the str into item model
-        for (int i = 0; i < itemModels.length; i++){
+        for (int i = 0; i < itemListStr.length; i++){
             String[] itemStr = itemListStr[i].trim().split("\\s+");
-
             if (itemStr.length < 3) return null;    // format error
 
-            itemModels[i] = new ItemModel(String.join(" ", Arrays.asList(itemStr).subList(1, itemStr.length - 1))
-                                            ,Integer.parseInt(itemStr[0]), new BigDecimal(itemStr[itemStr.length-1]));
+            //check duplicate
+            String itemName = String.join(" ", Arrays.asList(itemStr).subList(1, itemStr.length - 1));
+            boolean duplicate = false;
+            for (int j = 0;  j< itemModels.size(); j++){
+                if (itemModels.get(j).getName().equals(itemName) && (itemModels.get(j).getPrice().compareTo(new BigDecimal(itemStr[itemStr.length-1]))) == 0) {
+                    itemModels.get(j).addQuantity(Integer.parseInt(itemStr[0]));
+                    duplicate = true;
+                    break;
+                }
+            }
+
+            if (!duplicate)
+                itemModels.add(new ItemModel(itemName, Integer.parseInt(itemStr[0]), new BigDecimal(itemStr[itemStr.length-1])));
         }
-        return itemModels;
+        return itemModels.stream().toArray(ItemModel[]::new);
     }
 
     public void addPrintReceiptBtnListener(ActionListener btnPrintReceiptListener){
