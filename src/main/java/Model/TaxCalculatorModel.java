@@ -38,25 +38,27 @@ public class TaxCalculatorModel {
             if (taxRateEntity == null) return new BigDecimal(-1); //-1 = location not exist
 
             //get Tax Rate and exempt tpye  of Location
-            BigDecimal curTax = new BigDecimal(0);
+            BigDecimal taxSum = new BigDecimal(0);
             final BigDecimal taxRate = taxRateEntity.getTaxRate();
             final List<TaxExemptEntity> taxExemptList = dbSession.createQuery("From TaxExemptEntity t Where t.city = ?1", TaxExemptEntity.class).setParameter(1, location).getResultList();
 
             //calculate Tax
-            for (int i = 0; i < items.length; i++){
+            for (int i = 0; i < items.length; i++) {
                 List<ProductEntity> product = dbSession.createQuery("From ProductEntity p Where p.productName = ?1", ProductEntity.class).setParameter(1, items[i].getName()).getResultList();
                 final int productType = product.size() > 0 ? product.get(0).getProductType() : 0;
-                if (isExempted(taxExemptList, productType)){
+                if (isExempted(taxExemptList, productType)) {
                     continue;
                 }
-                curTax = curTax.add(items[i].getPrice().multiply(taxRate).multiply(new BigDecimal(items[i].getQuantity())));
+                BigDecimal curTax = items[i].getPrice().multiply(taxRate).multiply(new BigDecimal(items[i].getQuantity()));
+                //round up tax to 0.05
+                curTax = curTax.multiply(new BigDecimal(20)).setScale(0, BigDecimal.ROUND_UP).divide(new BigDecimal(20));
+
+                taxSum = taxSum.add(curTax);
             }
 
             dbSession.close();
 
-            //round up tax to 0.05
-            curTax = curTax.multiply(new BigDecimal(20)).setScale(0, BigDecimal.ROUND_UP).divide(new BigDecimal(20));
-            return curTax;
+            return taxSum;
         }
         catch (GenericJDBCException e){
             dbSession.close();
